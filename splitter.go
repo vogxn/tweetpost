@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	TWEET_CHAR_LIMIT int = 128
+	TWEET_CHAR_LIMIT int = 140
 )
 
 // ScanTweets is a split function for a Scanner that returns a sequence of
@@ -32,6 +32,11 @@ func ScanTweets(data []byte, atEOF bool) (advance int, token []byte, err error) 
 		if unicode.IsSpace(r) {
 			// if appending word breaks tweet char limit, finish scan
 			word := data[start:i]
+			// replace newlines with space mid-tweet
+			switch data[i] {
+			case '\n', '\r':
+				data[i] = ' '
+			}
 			if len(tweet)+len(word) >= TWEET_CHAR_LIMIT {
 				return len(tweet) + width, tweet[:], nil
 			} else {
