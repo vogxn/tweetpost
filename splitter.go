@@ -1,9 +1,6 @@
-package main
+package tweetbook
 
 import (
-	"bufio"
-	"fmt"
-	"os"
 	"unicode"
 	"unicode/utf8"
 )
@@ -13,7 +10,7 @@ const (
 )
 
 // ScanTweets is a split function for a Scanner that returns a sequence of
-// tweets, each tweet not more than 128 characters in length.
+// tweets, each tweet not more than TWEET_CHAR_LIMIT characters in length.
 func ScanTweets(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	// Skip leading spaces.
 	start := 0
@@ -30,13 +27,13 @@ func ScanTweets(data []byte, atEOF bool) (advance int, token []byte, err error) 
 		var r rune
 		r, width = utf8.DecodeRune(data[i:])
 		if unicode.IsSpace(r) {
-			// if appending word breaks tweet char limit, finish scan
-			word := data[start:i]
 			// replace newlines with space mid-tweet
 			switch data[i] {
 			case '\n', '\r':
 				data[i] = ' '
 			}
+			word := data[start:i]
+			// if appending word breaks tweet char limit, finish scan
 			if len(tweet)+len(word) >= TWEET_CHAR_LIMIT {
 				return len(tweet) + width, tweet[:], nil
 			} else {
@@ -48,29 +45,8 @@ func ScanTweets(data []byte, atEOF bool) (advance int, token []byte, err error) 
 	}
 	// If we're at EOF, we have a final, non-empty, non-terminated chars. Return it.
 	if atEOF && len(data) > start {
-		return len(tweet), tweet[:], nil
+		return len(data), append(tweet, data[start:]...), nil
 	}
 	// Request more data.
 	return 0, nil, nil
-}
-
-func main() {
-	f, err := os.Open("story.txt")
-	if err != nil {
-		fmt.Println("failed to read file %v", err)
-		return
-	}
-
-	var scanner = bufio.NewScanner(f)
-	scanner.Split(ScanTweets)
-	count := 0
-	for scanner.Scan() {
-		count++
-		fmt.Printf("(%#v/n) ", count)
-		fmt.Println(scanner.Text())
-		fmt.Println()
-	}
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "error reading input:", err)
-	}
 }
