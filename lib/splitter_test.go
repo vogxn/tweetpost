@@ -1,4 +1,4 @@
-package tweetbook
+package lib
 
 import (
 	"bufio"
@@ -37,7 +37,7 @@ func TestSplitterFile(t *testing.T) {
 	if err := scanner.Err(); err != nil {
 		t.Error("error during scanning tweets")
 	}
-	if count != 9 {
-		t.Errorf("invalid tweet split, expected %d splits, got %d", 9, count)
+	if count != 13 {
+		t.Errorf("invalid tweet split, expected %d splits, got %d", 13, count)
 	}
 }

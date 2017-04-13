@@ -1,4 +1,4 @@
-package tweetbook
+package lib
 
 import (
 	"unicode"
