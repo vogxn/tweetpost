@@ -1,6 +1,6 @@
 package main
 
-/* This will serve the REST calls for tweetbook */
+/* This will serve the REST calls for tweetpost */
 
 import (
 	"bufio"
@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/julienschmidt/httprouter"
-	tb "github.com/vogxn/tweetbook"
-	tblib "github.com/vogxn/tweetbook/lib"
+	tpost "github.com/vogxn/tweetpost"
+	tpostlib "github.com/vogxn/tweetpost/lib"
 )
 
 // read a maximum of 1MB of tweet data
@@ -24,12 +24,12 @@ const MAX_BODY int64 = 1024 * 1024
 /* HomePage */
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Use the html/template library here
-	fmt.Fprint(w, "Welcome to Tweetbook!\n")
+	fmt.Fprint(w, "Welcome to tweetpost!\n")
 }
 
 /* Splitter POST */
 func Split(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var post tb.Post
+	var post tpost.Post
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, MAX_BODY))
 	if err != nil {
 		log.Panicln(err)
@@ -51,14 +51,14 @@ func Split(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.WriteHeader(http.StatusCreated)
 
 	// Write tweet sequences
-	var tweets []tb.Tweet
+	var tweets []tpost.Tweet
 	var scanner = bufio.NewScanner(strings.NewReader(post.Text))
-	scanner.Split(tblib.ScanTweets)
+	scanner.Split(tpostlib.ScanTweets)
 	count := 0
 	for scanner.Scan() {
 		count++
 		log.Println("scanned: ", scanner.Text())
-		tweets = append(tweets, tb.Tweet{scanner.Text(), post.Author, time.Now()})
+		tweets = append(tweets, tpost.Tweet{scanner.Text(), post.Author, time.Now()})
 	}
 
 	if err := json.NewEncoder(w).Encode(tweets); err != nil {
