@@ -1,7 +1,7 @@
-Tweetbook
+Tweetpost
 =========
 
-Tweetbook can chunk and breakdown tweets intelligently. The features include
+Tweetpost can chunk and breakdown tweets intelligently. The features include
 
 - Simple to use user-interface
 - Easy editing before posting
