@@ -2,6 +2,7 @@ package views
 
 import (
 	"html/template"
+	"log"
 	"net/http"
 
 	"github.com/vogxn/tweetpost/lib"
@@ -21,15 +22,15 @@ func (page *Page) Render(w http.ResponseWriter, data interface{}) error {
 }
 
 func init() {
-	layoutFiles := lib.LayoutFiles()
-
-	homePageFiles := append(layoutFiles, "templates/post/index.tmpl")
+	homePageFiles := append(lib.LayoutFiles(), "templates/post/index.tmpl")
+	log.Println("HOME: ", homePageFiles)
 	HomePage = &Page{
 		Template: template.Must(template.New("home").ParseFiles(homePageFiles...)),
 		Layout:   "bootstrap",
 	}
 
-	tweetPageFiles := append(layoutFiles, "templates/tweet/index.tmpl")
+	tweetPageFiles := append(lib.LayoutFiles(), "templates/tweet/index.tmpl")
+	log.Println("TWEET: ", tweetPageFiles)
 	TweetPage = &Page{
 		Template: template.Must(template.New("tweet").ParseFiles(tweetPageFiles...)),
 		Layout:   "bootstrap",

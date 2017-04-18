@@ -59,7 +59,7 @@ func (ph *PostHandle) Split(w http.ResponseWriter, r *http.Request, _ httprouter
 	// Success
 	w.WriteHeader(http.StatusCreated)
 
-	// Write tweet sequences
+	// Build tweet sequence
 	var tweets []tpost.Tweet
 	var scanner = bufio.NewScanner(strings.NewReader(post.Text))
 	scanner.Split(tpostlib.ScanTweets)
@@ -70,13 +70,7 @@ func (ph *PostHandle) Split(w http.ResponseWriter, r *http.Request, _ httprouter
 		tweets = append(tweets, tpost.Tweet{scanner.Text(), post.Author, time.Now()})
 	}
 
-	/*
-		if err := json.NewEncoder(w).Encode(tweets); err != nil {
-			log.Fatal(err)
-		}
-	*/
-
-	// Render the split post template
+	// Render the split tweets using html/template
 	tweetPage.Render(w, tweets)
 	log.Println("Tweets: ", len(tweets))
 }
