@@ -22,16 +22,20 @@ https://jsfiddle.net/gabrieleromanato/bynaK/
   };
 })(jQuery);
 
-$('form').submit(function (e) {
-  e.preventDefault();
-  var data = $(this).serializeFormJSON();
-  console.log(data);
+$(document).ready(function() {
+  $('input#split').click(function() {
+    $('form#form').submit(function (e) {
+      e.preventDefault();
+      var data = $(this).serializeFormJSON();
 
-  //$.post("post", data);
-
-  /* Object
-        email: "value"
-        name: "value"
-        password: "value"
-        */
+      $.post(
+        "post",
+        JSON.stringify(data),
+        function(res) {
+          console.log(res)
+        },
+        'json'
+      )
+    })
+  })
 });
