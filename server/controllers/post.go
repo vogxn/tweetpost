@@ -33,7 +33,14 @@ func (ph *PostHandle) Index(w http.ResponseWriter, r *http.Request, _ httprouter
 func (ph *PostHandle) Split(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	var tweetPage = views.TweetPage
 	var post tpost.Post
+
+	w.Header().Set("Content-Type", "application/html")
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, MAX_BODY))
+	if len(body) == 0 {
+		log.Fatal("No post data recieved")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	if err != nil {
 		log.Panicln(err)
 	}
@@ -42,7 +49,6 @@ func (ph *PostHandle) Split(w http.ResponseWriter, r *http.Request, _ httprouter
 		log.Panicln(err)
 	}
 
-	w.Header().Set("Content-Type", "application/html")
 	if err := json.Unmarshal(body, &post); err != nil {
 		w.WriteHeader(422) // Unprocessable Entity
 		if err := json.NewEncoder(w).Encode(err); err != nil {
