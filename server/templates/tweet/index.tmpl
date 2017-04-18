@@ -1,0 +1,9 @@
+{{ define "yield" }}
+  <ol class="list">
+    {{ range . }}
+      <li class="item"> {{ .Text }} </li>
+    {{ end }}
+  </ol>
+  <button name="tweet" value="Tweet!" type="submit" formaction="https://twitter.com/"> </button>
+{{end}}
+

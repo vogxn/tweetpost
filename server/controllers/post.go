@@ -1,11 +1,8 @@
-package main
-
-/* This will serve the REST calls for tweetpost */
+package controllers
 
 import (
 	"bufio"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -16,19 +13,25 @@ import (
 	"github.com/julienschmidt/httprouter"
 	tpost "github.com/vogxn/tweetpost"
 	tpostlib "github.com/vogxn/tweetpost/lib"
+	"github.com/vogxn/tweetpost/server/views"
 )
 
 // read a maximum of 1MB of tweet data
 const MAX_BODY int64 = 1024 * 1024
 
+type PostHandle httprouter.Handle
+
 /* HomePage */
-func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	// Use the html/template library here
-	fmt.Fprint(w, "Welcome to tweetpost!\n")
+func (ph *PostHandle) Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	// Render the homepage template
+	w.Header().Set("Content-Type", "text/html")
+	var homePage = views.HomePage
+	homePage.Render(w, nil)
 }
 
 /* Splitter POST */
-func Split(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (ph *PostHandle) Split(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	var tweetPage = views.TweetPage
 	var post tpost.Post
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, MAX_BODY))
 	if err != nil {
@@ -39,7 +42,7 @@ func Split(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		log.Panicln(err)
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Content-Type", "application/html")
 	if err := json.Unmarshal(body, &post); err != nil {
 		w.WriteHeader(422) // Unprocessable Entity
 		if err := json.NewEncoder(w).Encode(err); err != nil {
@@ -61,16 +64,13 @@ func Split(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		tweets = append(tweets, tpost.Tweet{scanner.Text(), post.Author, time.Now()})
 	}
 
-	if err := json.NewEncoder(w).Encode(tweets); err != nil {
-		log.Fatal(err)
-	}
+	/*
+		if err := json.NewEncoder(w).Encode(tweets); err != nil {
+			log.Fatal(err)
+		}
+	*/
+
+	// Render the split post template
+	tweetPage.Render(w, tweets)
 	log.Println("Tweets: ", len(tweets))
-}
-
-func main() {
-	router := httprouter.New()
-	router.GET("/", Index)
-	router.POST("/split", Split)
-
-	log.Fatal(http.ListenAndServe(":8080", router))
 }
