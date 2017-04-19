@@ -33,6 +33,8 @@ Features
 
 Coming soon
 -----------
+- OAuth with Twitter
+- Post the actual tweets
 - Scheduled posts support
 - URL shortening using bit.ly, goo.gl and youtu.be?
 - Chain tweet reading support
