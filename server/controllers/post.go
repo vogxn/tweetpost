@@ -3,6 +3,7 @@ package controllers
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -48,7 +49,7 @@ func (ph *PostHandle) Split(w http.ResponseWriter, r *http.Request, _ httprouter
 	}
 
 	if err := json.Unmarshal(body, &post); err != nil {
-		w.WriteHeader(422) // Unprocessable Entity
+		w.WriteHeader(http.StatusUnprocessableEntity) // Unprocessable Entity
 		if err := json.NewEncoder(w).Encode(err); err != nil {
 			log.Fatal(err)
 		}
@@ -65,7 +66,12 @@ func (ph *PostHandle) Split(w http.ResponseWriter, r *http.Request, _ httprouter
 	for scanner.Scan() {
 		count++
 		log.Println("scanned: ", scanner.Text())
-		tweets = append(tweets, tpost.Tweet{scanner.Text()})
+		if count > 999 {
+			log.Fatal("tweetstorm is too large than reserved space for sequence chars")
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		seqTweet := fmt.Sprintf("%d/ %s", count, scanner.Text())
+		tweets = append(tweets, tpost.Tweet{seqTweet})
 	}
 
 	if err := json.NewEncoder(w).Encode(tweets); err != nil {

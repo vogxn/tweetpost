@@ -6,7 +6,9 @@ import (
 )
 
 const (
-	TWEET_CHAR_LIMIT int = 140
+	// We will insert the tweet split number. The 4 chars at the end are reserved
+	// for this purpose
+	TWEET_CHAR_LIMIT int = 136
 )
 
 // ScanTweets is a split function for a Scanner that returns a sequence of
