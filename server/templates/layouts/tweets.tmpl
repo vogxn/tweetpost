@@ -1,0 +1,10 @@
+{{define "tweets"}}
+  <div class="row marketing">
+    <div class="col-lg-6">
+      {{ range . }}
+        <h4>Subheading</h4>
+        <p> {{ .Text }} </p>
+      {{ end }}
+    </div>
+  </div>
+{{end}}

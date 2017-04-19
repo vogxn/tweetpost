@@ -21,10 +21,10 @@ func (page *Page) Render(w http.ResponseWriter, data interface{}) error {
 }
 
 func init() {
-	homePageFiles := append(lib.LayoutFiles(), "templates/post/index.tmpl")
+	homePageFiles := lib.LayoutFiles()
 	log.Println("HOME: ", homePageFiles)
 	HomePage = &Page{
 		Template: template.Must(template.New("home").ParseFiles(homePageFiles...)),
-		Layout:   "bootstrap",
+		Layout:   "content",
 	}
 }

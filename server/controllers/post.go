@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/julienschmidt/httprouter"
 	tpost "github.com/vogxn/tweetpost"
@@ -66,7 +65,7 @@ func (ph *PostHandle) Split(w http.ResponseWriter, r *http.Request, _ httprouter
 	for scanner.Scan() {
 		count++
 		log.Println("scanned: ", scanner.Text())
-		tweets = append(tweets, tpost.Tweet{scanner.Text(), post.Author, time.Now()})
+		tweets = append(tweets, tpost.Tweet{scanner.Text()})
 	}
 
 	if err := json.NewEncoder(w).Encode(tweets); err != nil {

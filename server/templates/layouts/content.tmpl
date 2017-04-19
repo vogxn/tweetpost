@@ -1,8 +1,12 @@
 {{define "content"}}
-  <body>
-    <div class="container">
-      <!-- Our content will go here. -->
-      {{template "yield" .}}
+      {{ template "header" }}
+
+      <!-- main form  -->
+      {{ template "form" }}
+      <!-- tweets  -->
+      {{ template "tweets" . }}
+
+      {{ template "footer" }}
     </div>
   </body>
 {{end}}

@@ -23,7 +23,7 @@ https://jsfiddle.net/gabrieleromanato/bynaK/
 })(jQuery);
 
 $(document).ready(function() {
-  $('input#split').click(function() {
+  $('button#split').click(function() {
     $('form#form').submit(function (e) {
       e.preventDefault();
       var data = $(this).serializeFormJSON();
@@ -35,7 +35,7 @@ $(document).ready(function() {
           $('.row').remove()
           $.each(res, function(key, value) {
             $.each(this, function(k, v) {
-              $('.container').append( "<div class='row'> <div class='col-xl-10 col-md-8 col-sm-6 col-xs-8'>" + v + "</div></div>" )
+              $('.footer').before( "<div class='row marketing'> <div class='col-log-6'> <hr> <p>" + v + "</p></div></div>" )
             });
           });
         },
