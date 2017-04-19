@@ -32,10 +32,15 @@ $(document).ready(function() {
         "post",
         JSON.stringify(data),
         function(res) {
-          console.log(res)
+          $('.row').remove()
+          $.each(res, function(key, value) {
+            $.each(this, function(k, v) {
+              $('.container').append( "<div class='row'> <div class='col-xl-10 col-md-8 col-sm-6 col-xs-8'>" + v + "</div></div>" )
+            });
+          });
         },
         'json'
       )
-    })
-  })
+    });
+  });
 });

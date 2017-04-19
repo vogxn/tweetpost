@@ -14,7 +14,6 @@ type Page struct {
 }
 
 var HomePage *Page
-var TweetPage *Page
 
 // Render the layout as a html/template
 func (page *Page) Render(w http.ResponseWriter, data interface{}) error {
@@ -26,13 +25,6 @@ func init() {
 	log.Println("HOME: ", homePageFiles)
 	HomePage = &Page{
 		Template: template.Must(template.New("home").ParseFiles(homePageFiles...)),
-		Layout:   "bootstrap",
-	}
-
-	tweetPageFiles := append(lib.LayoutFiles(), "templates/tweet/index.tmpl")
-	log.Println("TWEET: ", tweetPageFiles)
-	TweetPage = &Page{
-		Template: template.Must(template.New("tweet").ParseFiles(tweetPageFiles...)),
 		Layout:   "bootstrap",
 	}
 }

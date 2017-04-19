@@ -31,10 +31,9 @@ func (ph *PostHandle) Index(w http.ResponseWriter, r *http.Request, _ httprouter
 
 /* Splitter POST */
 func (ph *PostHandle) Split(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var tweetPage = views.TweetPage
 	var post tpost.Post
 
-	w.Header().Set("Content-Type", "application/html")
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, MAX_BODY))
 	if len(body) == 0 {
 		log.Fatal("No post data recieved")
@@ -70,7 +69,8 @@ func (ph *PostHandle) Split(w http.ResponseWriter, r *http.Request, _ httprouter
 		tweets = append(tweets, tpost.Tweet{scanner.Text(), post.Author, time.Now()})
 	}
 
-	// Render the split tweets using html/template
-	tweetPage.Render(w, tweets)
+	if err := json.NewEncoder(w).Encode(tweets); err != nil {
+		log.Fatal(err)
+	}
 	log.Println("Tweets: ", len(tweets))
 }
