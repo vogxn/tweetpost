@@ -3,6 +3,22 @@ Tweetpost
 
 Tweetpost can chunk and breakdown tweets intelligently. 
 
+Running
+-------
+```Bash
+$ go get github.com/vogxn/tweetpost
+$ cd $GOPATH/src/github.com/vogxn/tweetpost
+$ cd server/
+$ go run main.go
+```
+
+Open (http://localhost:8080/post)[http://localhost:8080/post] on your browser
+and start splitting tweets
+
+Screenshot
+---------
+[[https://github.com/vogxn/tweetpost/blob/master/server/static/favicons/tweetpost.png|alt=tweetpost]]
+
 ### Note
 This app is a demonstration of golang used to build web applications. It should
 serve as a simple guide to layout your MVC apps. Most of the server side code
