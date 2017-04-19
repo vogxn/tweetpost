@@ -17,7 +17,7 @@ and start splitting tweets
 
 Screenshot
 ---------
-[[https://github.com/vogxn/tweetpost/blob/master/server/static/favicons/tweetpost.png|alt=tweetpost]]
+![tweetpost](https://github.com/vogxn/tweetpost/blob/master/server/static/favicons/tweetpost.png "Tweetpost screenshot")
 
 ### Note
 This app is a demonstration of golang used to build web applications. It should
