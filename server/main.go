@@ -9,12 +9,16 @@ import (
 )
 
 func main() {
+
 	var post controllers.PostHandle
 	router := httprouter.New()
-
 	// main routes
-	router.GET("/post", post.Index)
-	router.POST("/post", post.Split)
+	router.GET("/", post.Index)
+	router.POST("/split", post.Split)
+
+	// final tweet poster
+	router.POST("/tweet", post.Tweet)
+	router.GET("/tweet", post.Tweet)
 
 	// serve static assets
 	router.GET("/static/*filepath", controllers.Static)
