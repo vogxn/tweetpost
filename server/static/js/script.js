@@ -28,8 +28,9 @@ $(document).ready(function() {
       e.preventDefault();
       var data = $(this).serializeFormJSON();
 
+      // Perform a POST to split the tweet
       $.post(
-        "post",
+        "split",
         JSON.stringify(data),
         function(res) {
           $('.row').remove()
@@ -41,6 +42,10 @@ $(document).ready(function() {
         },
         'json'
       )
+
+      // Inject the Tweet button
+      $('button#tweet').remove()
+      $('.jumbotron').append(" <button class='btn btn-lg btn-info' id='tweet' type='submit'>Tweet!</button> ")
     });
   });
 });
