@@ -1,10 +1,10 @@
-/** Serialize form data into JSON 
+$(document).ready(function() {
+  /** Serialize form data into JSON 
 
--- Code by Gabriel R.
+-- Modified from Original Code by Gabriel R.
 https://jsfiddle.net/gabrieleromanato/bynaK/
- **/
+   **/
 
-(function ($) {
   $.fn.serializeFormJSON = function () {
     var o = {};
     var a = this.serializeArray();
@@ -20,9 +20,10 @@ https://jsfiddle.net/gabrieleromanato/bynaK/
     });
     return o;
   };
-})(jQuery);
+});
 
 $(document).ready(function() {
+  // Splitter functions
   $('button#split').click(function() {
     $('form#form').submit(function (e) {
       e.preventDefault();
@@ -43,9 +44,18 @@ $(document).ready(function() {
         'json'
       )
 
-      // Inject the Tweet button
-      $('button#tweet').remove()
-      $('.jumbotron').append(" <button class='btn btn-lg btn-info' id='tweet' type='submit'>Tweet!</button> ")
+    });
+
+    $('button#tweet').remove()
+    $('.jumbotron').append(" <button class='btn btn-lg btn-info' id='tweet' type='button'>Tweet!</button> ")
+    // Tweet functions
+    $('button#tweet').click(function(e) {
+      e.preventDefault()
+
+      $.post(
+        "tweet",
+        ""
+      )
     });
   });
 });
