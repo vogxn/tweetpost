@@ -13,7 +13,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	tpost "github.com/vogxn/tweetpost"
 	tpostlib "github.com/vogxn/tweetpost/lib"
-	"github.com/vogxn/tweetpost/server/config"
+	"github.com/vogxn/tweetpost/server/auth"
 	"github.com/vogxn/tweetpost/server/views"
 )
 
@@ -22,7 +22,7 @@ const MAX_BODY int64 = 1024 * 1024
 
 type PostHandle httprouter.Handle
 
-var authDetail = config.Auth
+var twitterAuth = auth.NewTwitterAuth("tweetpost")
 
 // Homepage Index
 func (ph *PostHandle) Index(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -36,36 +36,45 @@ func (ph *PostHandle) Index(w http.ResponseWriter, r *http.Request, ps httproute
 func (ph *PostHandle) Tweet(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	var url string
 	var err error
+	defer r.Body.Close()
 
 	if r.Method == "GET" && r.FormValue("oauth_token") != "" {
 		// 2nd Leg of OAuth verification
 		var verificationCode = r.FormValue("oauth_verifier")
-		log.Println(authDetail.RequestToken)
-		authDetail.AccessToken, err = authDetail.Consumer.AuthorizeToken(authDetail.RequestToken, verificationCode)
+		log.Println(twitterAuth.RequestToken)
+		twitterAuth.AccessToken, err = twitterAuth.AuthorizeToken(twitterAuth.RequestToken, verificationCode)
 		if err != nil {
 			log.Fatal("error authorizing client")
 		}
-		log.Printf("AccessToken: %+v\n", authDetail.AccessToken)
+		log.Printf("AccessToken: %+v\n", twitterAuth.AccessToken)
 
 		// Create HttpClient
-		client, _ := authDetail.MakeHttpClient()
+		client, _ := twitterAuth.MakeHttpClient()
 		response, _ := client.Get("https://api.twitter.com/1.1/statuses/home_timeline.json?count=1")
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.Header().Add("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
 		response.Write(w)
 
 		// Set Form Values from Flash Messages
 	} else if r.Method == "POST" {
-		// Start 3-legged Auth
-		authDetail.Consumer.Debug(true)
-		authDetail.RequestToken, url, err = authDetail.Consumer.GetRequestTokenAndUrl("http://localhost:8080/tweet")
+		// Start OAuth here
+		twitterAuth.RequestToken, url, err = twitterAuth.GetRequestTokenAndUrl("http://localhost:8080/tweet")
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		// Redirect to twitter auth
-		http.Redirect(w, r, url, 301)
 		log.Println("Redirected to: ", url)
-		log.Printf("RequestToken: %+v\n", authDetail.RequestToken)
+		log.Printf("RequestToken: %+v\n", twitterAuth.RequestToken)
+		w.Header().Add("Access-Control-Allow-Origin", "*")
+		http.Redirect(w, r, url, http.StatusFound)
+	} else if r.Method == "OPTIONS" {
+		log.Println("encountered OPTIONS header")
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.Header().Add("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Println("Unable to perform OAuth")
 	}
 }
 
